@@ -25,6 +25,7 @@ OPTIONAL ARGUMENTS:
 OUTPUT FORMAT:
     CSV files with structure: time, lat, lon, var1, var2, ..., varN
     One CSV file generated per input NC4 file
+    Merged CSV file (merged_output.csv) if multiple files processed
 
 ============================================================================
 """
@@ -66,34 +67,30 @@ def parse_arguments() -> argparse.Namespace:
     Defines and parses all command-line arguments for the converter.
     """
     parser = argparse.ArgumentParser(
-        description='Convert NASA GLDAS NetCDF4 files to CSV format',
+        description='Convert NASA GLDAS NC4 files to CSV format',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    # Basic usage
-    python nc4_to_csv.py --input-dir ./nc4_files --output-dir ./csv_output
-    
-    # With custom pattern and verbose logging
-    python nc4_to_csv.py --input-dir ./data --output-dir ./output \\
-        --pattern "GLDAS*.nc4" --verbose
-    
-    # With custom log file
-    python nc4_to_csv.py --input-dir ./data --output-dir ./output \\
-        --log-file processing.log
+  # Convert all NC4 files in a directory
+  python nc4_to_csv.py --input-dir ./data --output-dir ./output
+  
+  # Convert single file with verbose logging
+  python nc4_to_csv.py --input-dir ./data/file.nc4 --output-dir ./output --verbose
+  
+  # Convert with custom pattern
+  python nc4_to_csv.py --input-dir ./data --output-dir ./output --pattern "*.nc"
         """
     )
     
     # Required arguments
     parser.add_argument(
         '--input-dir',
-        type=str,
         required=True,
         help='Directory containing NC4 files OR path to single NC4 file'
     )
     
     parser.add_argument(
         '--output-dir',
-        type=str,
         required=True,
         help='Directory for output CSV files'
     )
@@ -101,14 +98,12 @@ Examples:
     # Optional arguments
     parser.add_argument(
         '--pattern',
-        type=str,
         default='*.nc4',
         help='File pattern to match (default: *.nc4)'
     )
     
     parser.add_argument(
         '--log-file',
-        type=str,
         default='conversion.log',
         help='Log file path (default: conversion.log)'
     )
@@ -128,9 +123,13 @@ Examples:
     return parser.parse_args()
 
 
-def find_nc4_files(input_dir: str, pattern: str, logger) -> List[Path]:
+def find_nc4_files(
+    input_dir: str,
+    pattern: str,
+    logger
+) -> List[Path]:
     """
-    Find all NC4 files matching pattern in input directory or single file.
+    Find all NC4 files matching the pattern.
     
     INPUTS:
     - input_dir (str): Directory to search OR path to single file
@@ -189,7 +188,8 @@ def process_single_file(
     2. Validate structure
     3. Extract coordinates and variables
     4. Flatten data
-    5. Write CSV
+    5. Remove empty rows
+    6. Write CSV
     """
     try:
         # Log processing start
@@ -242,6 +242,9 @@ def process_single_file(
         # Close dataset to free memory
         dataset.close()
         
+        # Step 5.5: Remove empty rows (ADDED)
+        df = remove_empty_variable_rows(df, logger)
+        
         # Step 6: Write CSV
         output_path = get_output_path(str(nc4_file), output_dir, logger)
         write_csv(df, str(output_path), logger)
@@ -276,7 +279,8 @@ def main():
     2. Setup logging
     3. Find all NC4 files
     4. Process each file
-    5. Report summary statistics
+    5. Merge CSV files if multiple files processed
+    6. Report summary statistics
     """
     # Parse arguments
     args = parse_arguments()
@@ -303,6 +307,7 @@ def main():
     total_files = len(nc4_files)
     successful = 0
     failed = 0
+    output_csv_files = []  # Track generated CSV files (ADDED)
     
     for i, nc4_file in enumerate(nc4_files, 1):
         logger.info(f"\n[{i}/{total_files}] Processing: {nc4_file.name}")
@@ -317,8 +322,27 @@ def main():
         
         if success:
             successful += 1
+            # Track the output CSV file path (ADDED)
+            output_path = get_output_path(str(nc4_file), args.output_dir, logger)
+            output_csv_files.append(str(output_path))
         else:
             failed += 1
+    
+    # Merge CSV files if multiple files were processed successfully (ADDED)
+    if successful > 1:
+        logger.info("\n" + "=" * 70)
+        logger.info("MERGING CSV FILES")
+        logger.info("=" * 70)
+        
+        merged_output_path = Path(args.output_dir) / "merged_output.csv"
+        merge_csv_files(
+            output_csv_files,
+            str(merged_output_path),
+            logger,
+            remove_source_files=False  # Keep individual files by default
+        )
+    elif successful == 1:
+        logger.info("\nOnly one file processed successfully - no merge needed")
     
     # Log final summary
     log_batch_summary(logger, total_files, successful, failed, 0)
