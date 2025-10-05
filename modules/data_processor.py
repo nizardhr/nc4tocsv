@@ -12,6 +12,7 @@ KEY FUNCTIONS:
 - flatten_dataset: Main function to convert xarray Dataset to pandas DataFrame
 - create_coordinate_mesh: Generate all coordinate combinations
 - append_variable_data: Extract and append variable values
+- remove_empty_variable_rows: Remove rows with any empty variables
 
 ============================================================================
 """
@@ -282,20 +283,21 @@ def remove_empty_variable_rows(
     logger: logging.Logger
 ) -> pd.DataFrame:
     """
-    Remove rows where all variable columns are empty/NaN.
+    Remove rows where ANY variable column is empty/NaN.
     
     INPUTS:
     - df (pd.DataFrame): DataFrame to clean
     - logger (logging.Logger): Logger instance
     
     OUTPUTS:
-    - pd.DataFrame: Cleaned DataFrame with empty rows removed
+    - pd.DataFrame: Cleaned DataFrame with incomplete rows removed
     
     FUNCTIONALITY:
-    Identifies rows where all data variables (excluding time, lat, lon)
-    are NaN or missing, and removes them from the DataFrame.
+    Identifies rows where ANY data variable (excluding time, lat, lon)
+    is NaN or missing, and removes them from the DataFrame.
+    Only keeps rows where ALL variables have valid values.
     """
-    logger.info("Removing rows with all empty variables...")
+    logger.info("Removing rows with any empty variables...")
     
     rows_before = len(df)
     
@@ -307,18 +309,100 @@ def remove_empty_variable_rows(
         logger.warning("No variable columns found to check for empty rows")
         return df
     
-    # Remove rows where ALL variable columns are NaN
-    # Keep row if at least one variable has a value
+    # Remove rows where ANY variable column is NaN (UPDATED)
+    # Keep row only if all variables have values
     df_cleaned = df.dropna(subset=var_cols, how='any')
     
     rows_after = len(df_cleaned)
     rows_removed = rows_before - rows_after
     
     if rows_removed > 0:
-        logger.info(f"Removed {rows_removed:,} rows with all empty variables "
+        logger.info(f"Removed {rows_removed:,} rows with any empty variables "
                    f"({(rows_removed/rows_before*100):.1f}% of data)")
         logger.info(f"Remaining rows: {rows_after:,}")
     else:
-        logger.info("No empty rows found - all data retained")
+        logger.info("No incomplete rows found - all data retained")
     
     return df_cleaned
+
+
+def process_date_features(
+    df: pd.DataFrame,
+    logger: logging.Logger
+) -> pd.DataFrame:
+    """
+    Convert time column to multiple date-related features with cyclical encoding.
+    
+    INPUTS:
+    - df (pd.DataFrame): DataFrame with 'time' column
+    - logger (logging.Logger): Logger instance
+    
+    OUTPUTS:
+    - pd.DataFrame: DataFrame with expanded date features, original 'time' column removed
+    
+    FUNCTIONALITY:
+    Creates the following features from 'time' column:
+    - day_of_year: Integer day of year (1-366)
+    - month: Integer month (1-12)
+    - year: Integer year
+    - day_of_week: Integer day of week (Monday=0, Sunday=6)
+    - is_weekend: Binary weekend indicator (1=weekend, 0=weekday)
+    - sin_day_of_year, cos_day_of_year: Cyclical encoding for day of year
+    - sin_month, cos_month: Cyclical encoding for month
+    - sin_day_of_week, cos_day_of_week: Cyclical encoding for day of week
+    
+    Then removes the original 'time' column.
+    """
+    logger.info("Processing date features from time column...")
+    
+    # Check if time column exists
+    if 'time' not in df.columns:
+        logger.warning("No 'time' column found - skipping date processing")
+        return df
+    
+    # Convert time column to datetime if not already
+    df['time'] = pd.to_datetime(df['time'])
+    
+    # Extract basic date features
+    df['day_of_year'] = df['time'].dt.dayofyear
+    df['month'] = df['time'].dt.month
+    df['year'] = df['time'].dt.year
+    df['day_of_week'] = df['time'].dt.dayofweek  # Monday=0, Sunday=6
+    df['is_weekend'] = df['time'].dt.dayofweek.isin([5, 6]).astype(int)
+    
+    # Cyclical encoding for day of year (handles leap years)
+    df['sin_day_of_year'] = np.sin(2 * np.pi * df['day_of_year'] / 366)
+    df['cos_day_of_year'] = np.cos(2 * np.pi * df['day_of_year'] / 366)
+    
+    # Cyclical encoding for month
+    df['sin_month'] = np.sin(2 * np.pi * df['month'] / 12)
+    df['cos_month'] = np.cos(2 * np.pi * df['month'] / 12)
+    
+    # Cyclical encoding for day of week
+    df['sin_day_of_week'] = np.sin(2 * np.pi * df['day_of_week'] / 7)
+    df['cos_day_of_week'] = np.cos(2 * np.pi * df['day_of_week'] / 7)
+    
+    # Reorder columns: lat, lon, date features, then variable columns
+    coord_cols = ['lat', 'lon']
+    date_cols = [
+        'day_of_year', 'month', 'year', 'day_of_week', 'is_weekend',
+        'sin_day_of_year', 'cos_day_of_year',
+        'sin_month', 'cos_month',
+        'sin_day_of_week', 'cos_day_of_week'
+    ]
+    
+    # Get variable columns (all columns except time, lat, lon, and new date columns)
+    all_cols = set(df.columns)
+    exclude_cols = set(['time'] + coord_cols + date_cols)
+    var_cols = sorted(list(all_cols - exclude_cols))
+    
+    # Reorder: coordinates, date features, then variables
+    ordered_cols = coord_cols + date_cols + var_cols
+    df = df[ordered_cols]
+    
+    logger.info(f"Date features created: 13 new columns added, 'time' column removed")
+    logger.debug(f"New date columns: {', '.join(date_cols)}")
+    logger.info(f"Final column order: lat, lon, date features ({len(date_cols)}), " +
+               f"variables ({len(var_cols)})")
+    
+    return df
