@@ -331,25 +331,27 @@ def process_date_features(
     logger: logging.Logger
 ) -> pd.DataFrame:
     """
-    Convert time column to multiple date-related features with cyclical encoding.
+    Convert time column to date and hour features with cyclical encoding.
     
     INPUTS:
     - df (pd.DataFrame): DataFrame with 'time' column
     - logger (logging.Logger): Logger instance
     
     OUTPUTS:
-    - pd.DataFrame: DataFrame with expanded date features, original 'time' column removed
+    - pd.DataFrame: DataFrame with date, hour, and cyclical hour encoding
     
     FUNCTIONALITY:
     Creates the following features from 'time' column:
-    - day_of_year: Integer day of year (1-366)
-    - month: Integer month (1-12)
-    - year: Integer year
-    - day_of_week: Integer day of week (Monday=0, Sunday=6)
-    - is_weekend: Binary weekend indicator (1=weekend, 0=weekday)
-    - sin_day_of_year, cos_day_of_year: Cyclical encoding for day of year
-    - sin_month, cos_month: Cyclical encoding for month
-    - sin_day_of_week, cos_day_of_week: Cyclical encoding for day of week
+    - date: Date only (YYYY-MM-DD format, no time)
+    - hour: Hour in format 00, 03, 06, 09, 12, 15, 18, or 21
+    - sin_hour: Sine component of hour (cyclical encoding)
+    - cos_hour: Cosine component of hour (cyclical encoding)
+    - sin_day_of_year: Sine component of day of year (cyclical encoding)
+    - cos_day_of_year: Cosine component of day of year (cyclical encoding)
+    - sin_month: Sine component of month (cyclical encoding)
+    - cos_month: Cosine component of month (cyclical encoding)
+    - sin_day_of_week: Sine component of day of week (cyclical encoding)
+    - cos_day_of_week: Cosine component of day of week (cyclical encoding)
     
     Then removes the original 'time' column.
     """
@@ -363,29 +365,40 @@ def process_date_features(
     # Convert time column to datetime if not already
     df['time'] = pd.to_datetime(df['time'])
     
-    # Extract basic date features
-    df['day_of_year'] = df['time'].dt.dayofyear
-    df['month'] = df['time'].dt.month
-    df['year'] = df['time'].dt.year
-    df['day_of_week'] = df['time'].dt.dayofweek  # Monday=0, Sunday=6
-    df['is_weekend'] = df['time'].dt.dayofweek.isin([5, 6]).astype(int)
+    # Extract date only (no time component) - format as string YYYY-MM-DD
+    df['date'] = df['time'].dt.strftime('%Y-%m-%d')
+    # Extract hour and format as 00, 03, 06, 09, 12, 15, 18, 21
+    df['hour'] = df['time'].dt.hour.astype(str).str.zfill(2)
+    
+    # Get numeric hour for cyclical encoding
+    hour_numeric = df['time'].dt.hour
+    
+    # Cyclical encoding for hour (24-hour cycle)
+    df['sin_hour'] = np.sin(2 * np.pi * hour_numeric / 24)
+    df['cos_hour'] = np.cos(2 * np.pi * hour_numeric / 24)
+    
+    # Extract temporal features for cyclical encoding
+    day_of_year = df['time'].dt.dayofyear
+    month = df['time'].dt.month
+    day_of_week = df['time'].dt.dayofweek
     
     # Cyclical encoding for day of year (handles leap years)
-    df['sin_day_of_year'] = np.sin(2 * np.pi * df['day_of_year'] / 366)
-    df['cos_day_of_year'] = np.cos(2 * np.pi * df['day_of_year'] / 366)
+    df['sin_day_of_year'] = np.sin(2 * np.pi * day_of_year / 366)
+    df['cos_day_of_year'] = np.cos(2 * np.pi * day_of_year / 366)
     
     # Cyclical encoding for month
-    df['sin_month'] = np.sin(2 * np.pi * df['month'] / 12)
-    df['cos_month'] = np.cos(2 * np.pi * df['month'] / 12)
+    df['sin_month'] = np.sin(2 * np.pi * month / 12)
+    df['cos_month'] = np.cos(2 * np.pi * month / 12)
     
     # Cyclical encoding for day of week
-    df['sin_day_of_week'] = np.sin(2 * np.pi * df['day_of_week'] / 7)
-    df['cos_day_of_week'] = np.cos(2 * np.pi * df['day_of_week'] / 7)
+    df['sin_day_of_week'] = np.sin(2 * np.pi * day_of_week / 7)
+    df['cos_day_of_week'] = np.cos(2 * np.pi * day_of_week / 7)
     
-    # Reorder columns: lat, lon, date features, then variable columns
+    # Reorder columns: lat, lon, date, hour, cyclical encodings, then variable columns
     coord_cols = ['lat', 'lon']
     date_cols = [
-        'day_of_year', 'month', 'year', 'day_of_week', 'is_weekend',
+        'date', 'hour',
+        'sin_hour', 'cos_hour',
         'sin_day_of_year', 'cos_day_of_year',
         'sin_month', 'cos_month',
         'sin_day_of_week', 'cos_day_of_week'
@@ -400,9 +413,14 @@ def process_date_features(
     ordered_cols = coord_cols + date_cols + var_cols
     df = df[ordered_cols]
     
-    logger.info(f"Date features created: 13 new columns added, 'time' column removed")
+    logger.info(f"Date features created: {len(date_cols)} new columns added, 'time' column removed")
     logger.debug(f"New date columns: {', '.join(date_cols)}")
     logger.info(f"Final column order: lat, lon, date features ({len(date_cols)}), " +
                f"variables ({len(var_cols)})")
     
+    
+
+
+
+
     return df

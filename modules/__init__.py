@@ -36,7 +36,8 @@ from .data_processor import (
     create_coordinate_mesh,
     append_variable_data,
     optimize_dataframe_memory,
-    remove_empty_variable_rows
+    remove_empty_variable_rows,
+    process_date_features
 )
 
 from .csv_writer import (
@@ -68,6 +69,7 @@ __all__ = [
     'append_variable_data',
     'optimize_dataframe_memory',
     'remove_empty_variable_rows',
+    'process_date_features',
     
     # CSV Writer functions
     'write_csv',
@@ -77,5 +79,5 @@ __all__ = [
     'merge_csv_files'
 ]
 
-__version__ = '1.0.0'
+__version__ = '1.0.2'
 __author__ = 'NASA GLDAS Data Processing Team'

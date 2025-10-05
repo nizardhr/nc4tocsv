@@ -23,7 +23,7 @@ OPTIONAL ARGUMENTS:
     --no-progress   Disable progress bars
 
 OUTPUT FORMAT:
-    CSV files with structure: time, lat, lon, var1, var2, ..., varN
+    CSV files with structure: lat, lon, date features (13 cols), var1, var2, ..., varN
     One CSV file generated per input NC4 file
     Merged CSV file (merged_output.csv) if multiple files processed
 
@@ -50,6 +50,7 @@ from modules import (
     get_coordinate_names,
     flatten_dataset,
     remove_empty_variable_rows,
+    process_date_features,
     write_csv,
     get_output_path,
     merge_csv_files
@@ -189,7 +190,8 @@ def process_single_file(
     3. Extract coordinates and variables
     4. Flatten data
     5. Remove empty rows
-    6. Write CSV
+    6. Process date features
+    7. Write CSV
     """
     try:
         # Log processing start
@@ -242,8 +244,11 @@ def process_single_file(
         # Close dataset to free memory
         dataset.close()
         
-        # Step 5.5: Remove empty rows (ADDED)
+        # Step 5.5: Remove empty rows
         df = remove_empty_variable_rows(df, logger)
+        
+        # Step 5.6: Process date features (transforms time column)
+        df = process_date_features(df, logger)
         
         # Step 6: Write CSV
         output_path = get_output_path(str(nc4_file), output_dir, logger)
@@ -307,7 +312,7 @@ def main():
     total_files = len(nc4_files)
     successful = 0
     failed = 0
-    output_csv_files = []  # Track generated CSV files (ADDED)
+    output_csv_files = []  # Track generated CSV files
     
     for i, nc4_file in enumerate(nc4_files, 1):
         logger.info(f"\n[{i}/{total_files}] Processing: {nc4_file.name}")
@@ -322,13 +327,13 @@ def main():
         
         if success:
             successful += 1
-            # Track the output CSV file path (ADDED)
+            # Track the output CSV file path
             output_path = get_output_path(str(nc4_file), args.output_dir, logger)
             output_csv_files.append(str(output_path))
         else:
             failed += 1
     
-    # Merge CSV files if multiple files were processed successfully (ADDED)
+    # Merge CSV files if multiple files were processed successfully
     if successful > 1:
         logger.info("\n" + "=" * 70)
         logger.info("MERGING CSV FILES")
