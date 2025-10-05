@@ -275,3 +275,50 @@ def optimize_dataframe_memory(
                 f"({reduction:.1f}% reduction)")
     
     return df
+
+
+def remove_empty_variable_rows(
+    df: pd.DataFrame,
+    logger: logging.Logger
+) -> pd.DataFrame:
+    """
+    Remove rows where all variable columns are empty/NaN.
+    
+    INPUTS:
+    - df (pd.DataFrame): DataFrame to clean
+    - logger (logging.Logger): Logger instance
+    
+    OUTPUTS:
+    - pd.DataFrame: Cleaned DataFrame with empty rows removed
+    
+    FUNCTIONALITY:
+    Identifies rows where all data variables (excluding time, lat, lon)
+    are NaN or missing, and removes them from the DataFrame.
+    """
+    logger.info("Removing rows with all empty variables...")
+    
+    rows_before = len(df)
+    
+    # Get variable columns (exclude coordinates)
+    coord_cols = ['time', 'lat', 'lon']
+    var_cols = [col for col in df.columns if col not in coord_cols]
+    
+    if not var_cols:
+        logger.warning("No variable columns found to check for empty rows")
+        return df
+    
+    # Remove rows where ALL variable columns are NaN
+    # Keep row if at least one variable has a value
+    df_cleaned = df.dropna(subset=var_cols, how='all')
+    
+    rows_after = len(df_cleaned)
+    rows_removed = rows_before - rows_after
+    
+    if rows_removed > 0:
+        logger.info(f"Removed {rows_removed:,} rows with all empty variables "
+                   f"({(rows_removed/rows_before*100):.1f}% of data)")
+        logger.info(f"Remaining rows: {rows_after:,}")
+    else:
+        logger.info("No empty rows found - all data retained")
+    
+    return df_cleaned

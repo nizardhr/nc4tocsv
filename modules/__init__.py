@@ -35,14 +35,16 @@ from .data_processor import (
     flatten_dataset,
     create_coordinate_mesh,
     append_variable_data,
-    optimize_dataframe_memory
+    optimize_dataframe_memory,
+    remove_empty_variable_rows
 )
 
 from .csv_writer import (
     write_csv,
     get_output_path,
     validate_csv_output,
-    estimate_csv_size
+    estimate_csv_size,
+    merge_csv_files
 )
 
 __all__ = [
@@ -65,12 +67,14 @@ __all__ = [
     'create_coordinate_mesh',
     'append_variable_data',
     'optimize_dataframe_memory',
+    'remove_empty_variable_rows',
     
     # CSV Writer functions
     'write_csv',
     'get_output_path',
     'validate_csv_output',
-    'estimate_csv_size'
+    'estimate_csv_size',
+    'merge_csv_files'
 ]
 
 __version__ = '1.0.0'

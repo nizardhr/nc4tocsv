@@ -48,8 +48,10 @@ from modules import (
     extract_variables,
     get_coordinate_names,
     flatten_dataset,
+    remove_empty_variable_rows,
     write_csv,
-    get_output_path
+    get_output_path,
+    merge_csv_files
 )
 
 

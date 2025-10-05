@@ -219,3 +219,74 @@ def estimate_csv_size(
                 f"(DataFrame memory: {memory_mb:.1f} MB)")
     
     return estimated_size
+
+
+def merge_csv_files(
+    csv_files: list,
+    output_path: str,
+    logger: logging.Logger,
+    remove_source_files: bool = False
+) -> None:
+    """
+    Merge multiple CSV files into a single combined file.
+    
+    INPUTS:
+    - csv_files (list): List of paths to CSV files to merge
+    - output_path (str): Path to combined output CSV file
+    - logger (logging.Logger): Logger instance
+    - remove_source_files (bool): If True, delete source CSVs after merging
+    
+    OUTPUTS:
+    - None (writes merged file to disk)
+    
+    FUNCTIONALITY:
+    Reads all CSV files and combines them into a single DataFrame,
+    then writes to output. Optionally removes source files to save space.
+    """
+    if not csv_files:
+        logger.warning("No CSV files to merge")
+        return
+    
+    logger.info(f"Merging {len(csv_files)} CSV files into single output...")
+    
+    dataframes = []
+    total_rows = 0
+    
+    # Read each CSV file
+    for i, csv_file in enumerate(csv_files, 1):
+        try:
+            logger.debug(f"Reading file {i}/{len(csv_files)}: {Path(csv_file).name}")
+            df = pd.read_csv(csv_file)
+            dataframes.append(df)
+            total_rows += len(df)
+            logger.debug(f"  Loaded {len(df):,} rows")
+            
+        except Exception as e:
+            logger.error(f"Error reading {csv_file}: {e}")
+            continue
+    
+    if not dataframes:
+        logger.error("No CSV files could be read successfully")
+        return
+    
+    # Concatenate all dataframes
+    logger.info(f"Combining {len(dataframes)} dataframes ({total_rows:,} total rows)...")
+    combined_df = pd.concat(dataframes, ignore_index=True)
+    
+    logger.info(f"Combined DataFrame shape: {combined_df.shape}")
+    
+    # Write combined CSV
+    logger.info(f"Writing merged CSV to: {Path(output_path).name}")
+    write_csv(combined_df, output_path, logger)
+    
+    # Optionally remove source files
+    if remove_source_files:
+        logger.info("Removing source CSV files...")
+        for csv_file in csv_files:
+            try:
+                Path(csv_file).unlink()
+                logger.debug(f"Deleted: {Path(csv_file).name}")
+            except Exception as e:
+                logger.warning(f"Could not delete {csv_file}: {e}")
+    
+    logger.info(f"Merge complete! Final file contains {len(combined_df):,} rows")
