@@ -339,7 +339,7 @@ def main():
             output_csv_files,
             str(merged_output_path),
             logger,
-            remove_source_files=False  # Keep individual files by default
+            remove_source_files=True  # Delete individual files after merge
         )
     elif successful == 1:
         logger.info("\nOnly one file processed successfully - no merge needed")

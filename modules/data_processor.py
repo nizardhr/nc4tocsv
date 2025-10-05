@@ -309,7 +309,7 @@ def remove_empty_variable_rows(
     
     # Remove rows where ALL variable columns are NaN
     # Keep row if at least one variable has a value
-    df_cleaned = df.dropna(subset=var_cols, how='all')
+    df_cleaned = df.dropna(subset=var_cols, how='any')
     
     rows_after = len(df_cleaned)
     rows_removed = rows_before - rows_after
