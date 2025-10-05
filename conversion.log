@@ -1904,3 +1904,216 @@ ValueError: Columns must be same length as key
 2025-10-05 13:46:04 - INFO - Success rate:            100.0%
 2025-10-05 13:46:04 - INFO - ======================================================================
 2025-10-05 13:46:04 - INFO - All files processed successfully!
+2025-10-05 13:48:48 - INFO - Logging to file: conversion.log
+2025-10-05 13:48:48 - INFO - ======================================================================
+2025-10-05 13:48:48 - INFO - NASA GLDAS NC4 to CSV Batch Converter
+2025-10-05 13:48:48 - INFO - ======================================================================
+2025-10-05 13:48:48 - INFO - Input directory:  C:/Users/Nizar.DAHRABOU/Desktop/nc4tocsv/input
+2025-10-05 13:48:48 - INFO - Output directory: C:/Users/Nizar.DAHRABOU/Desktop/nc4tocsv/output
+2025-10-05 13:48:48 - INFO - File pattern:     *.nc4
+2025-10-05 13:48:48 - INFO - ======================================================================
+2025-10-05 13:48:48 - INFO - Found 4 files matching pattern '*.nc4'
+2025-10-05 13:48:48 - INFO - 
+[1/4] Processing: GLDAS_VIC10_3H.A20170106.0900.021.nc4
+2025-10-05 13:48:48 - INFO - ----------------------------------------------------------------------
+2025-10-05 13:48:48 - INFO - Processing file: GLDAS_VIC10_3H.A20170106.0900.021.nc4
+2025-10-05 13:48:48 - DEBUG - Opening NC4 file: GLDAS_VIC10_3H.A20170106.0900.021.nc4
+2025-10-05 13:48:48 - DEBUG - Successfully opened file: GLDAS_VIC10_3H.A20170106.0900.021.nc4
+2025-10-05 13:48:48 - DEBUG - NC4 structure validation passed
+2025-10-05 13:48:48 - DEBUG - Found time coordinate: 'time'
+2025-10-05 13:48:48 - DEBUG - Found latitude coordinate: 'lat'
+2025-10-05 13:48:48 - DEBUG - Found longitude coordinate: 'lon'
+2025-10-05 13:48:48 - DEBUG - Extracted coordinates: time(1), lat(150), lon(360)
+2025-10-05 13:48:48 - INFO - Dimensions: 1 time steps × 150 lat × 360 lon
+2025-10-05 13:48:48 - INFO - Total data points to generate: 54,000
+2025-10-05 13:48:48 - DEBUG - Found 35 data variables
+2025-10-05 13:48:48 - DEBUG - First variables: time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg
+2025-10-05 13:48:48 - DEBUG - ... and 30 more
+2025-10-05 13:48:48 - INFO - Found 35 data variables
+2025-10-05 13:48:48 - DEBUG - Variables (first 10): time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg, Qg_tavg, Snowf_tavg, Rainf_tavg, Evap_tavg, Qs_acc...
+2025-10-05 13:48:48 - DEBUG - ... and 25 more
+2025-10-05 13:48:48 - INFO - Starting dataset flattening process...
+2025-10-05 13:48:48 - DEBUG - Creating coordinate mesh...
+2025-10-05 13:48:48 - DEBUG - Generating 54,000 coordinate combinations
+2025-10-05 13:48:48 - DEBUG - Created coordinate mesh with 54,000 rows
+2025-10-05 13:48:48 - INFO - Extracting 35 variables...
+2025-10-05 13:48:48 - WARNING - Variable 'time_bnds' missing required dimensions. Skipping.
+2025-10-05 13:48:48 - INFO - Successfully extracted 34/35 variables
+2025-10-05 13:48:48 - WARNING - Failed to extract 1 variables: time_bnds
+2025-10-05 13:48:48 - INFO - Flattening complete. DataFrame shape: (54000, 37)
+2025-10-05 13:48:48 - INFO - Columns: 37 (3 coordinates + 34 variables)
+2025-10-05 13:48:48 - INFO - Removing rows with any empty variables...
+2025-10-05 13:48:48 - INFO - Removed 38,841 rows with any empty variables (71.9% of data)
+2025-10-05 13:48:48 - INFO - Remaining rows: 15,159
+2025-10-05 13:48:48 - INFO - Processing date features from time column...
+2025-10-05 13:48:48 - INFO - Date features created: 10 new columns added, 'time' column removed
+2025-10-05 13:48:48 - DEBUG - New date columns: date, hour, sin_hour, cos_hour, sin_day_of_year, cos_day_of_year, sin_month, cos_month, sin_day_of_week, cos_day_of_week
+2025-10-05 13:48:48 - INFO - Final column order: lat, lon, date features (10), variables (34)
+2025-10-05 13:48:48 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.0900.021.csv
+2025-10-05 13:48:48 - INFO - Writing CSV to: GLDAS_VIC10_3H.A20170106.0900.021.csv
+2025-10-05 13:48:48 - DEBUG - DataFrame shape: (15159, 46)
+2025-10-05 13:48:48 - DEBUG - Estimated memory usage: 4.7 MB
+2025-10-05 13:48:49 - INFO - CSV file written successfully (6.5 MB)
+2025-10-05 13:48:49 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.0900.021.csv
+2025-10-05 13:48:49 - INFO - 
+[2/4] Processing: GLDAS_VIC10_3H.A20170106.1200.021.nc4
+2025-10-05 13:48:49 - INFO - ----------------------------------------------------------------------
+2025-10-05 13:48:49 - INFO - Processing file: GLDAS_VIC10_3H.A20170106.1200.021.nc4
+2025-10-05 13:48:49 - DEBUG - Opening NC4 file: GLDAS_VIC10_3H.A20170106.1200.021.nc4
+2025-10-05 13:48:50 - DEBUG - Successfully opened file: GLDAS_VIC10_3H.A20170106.1200.021.nc4
+2025-10-05 13:48:50 - DEBUG - NC4 structure validation passed
+2025-10-05 13:48:50 - DEBUG - Found time coordinate: 'time'
+2025-10-05 13:48:50 - DEBUG - Found latitude coordinate: 'lat'
+2025-10-05 13:48:50 - DEBUG - Found longitude coordinate: 'lon'
+2025-10-05 13:48:50 - DEBUG - Extracted coordinates: time(1), lat(150), lon(360)
+2025-10-05 13:48:50 - INFO - Dimensions: 1 time steps × 150 lat × 360 lon
+2025-10-05 13:48:50 - INFO - Total data points to generate: 54,000
+2025-10-05 13:48:50 - DEBUG - Found 35 data variables
+2025-10-05 13:48:50 - DEBUG - First variables: time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg
+2025-10-05 13:48:50 - DEBUG - ... and 30 more
+2025-10-05 13:48:50 - INFO - Found 35 data variables
+2025-10-05 13:48:50 - DEBUG - Variables (first 10): time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg, Qg_tavg, Snowf_tavg, Rainf_tavg, Evap_tavg, Qs_acc...
+2025-10-05 13:48:50 - DEBUG - ... and 25 more
+2025-10-05 13:48:50 - INFO - Starting dataset flattening process...
+2025-10-05 13:48:50 - DEBUG - Creating coordinate mesh...
+2025-10-05 13:48:50 - DEBUG - Generating 54,000 coordinate combinations
+2025-10-05 13:48:50 - DEBUG - Created coordinate mesh with 54,000 rows
+2025-10-05 13:48:50 - INFO - Extracting 35 variables...
+2025-10-05 13:48:50 - WARNING - Variable 'time_bnds' missing required dimensions. Skipping.
+2025-10-05 13:48:50 - INFO - Successfully extracted 34/35 variables
+2025-10-05 13:48:50 - WARNING - Failed to extract 1 variables: time_bnds
+2025-10-05 13:48:50 - INFO - Flattening complete. DataFrame shape: (54000, 37)
+2025-10-05 13:48:50 - INFO - Columns: 37 (3 coordinates + 34 variables)
+2025-10-05 13:48:50 - INFO - Removing rows with any empty variables...
+2025-10-05 13:48:50 - INFO - Removed 38,841 rows with any empty variables (71.9% of data)
+2025-10-05 13:48:50 - INFO - Remaining rows: 15,159
+2025-10-05 13:48:50 - INFO - Processing date features from time column...
+2025-10-05 13:48:50 - INFO - Date features created: 10 new columns added, 'time' column removed
+2025-10-05 13:48:50 - DEBUG - New date columns: date, hour, sin_hour, cos_hour, sin_day_of_year, cos_day_of_year, sin_month, cos_month, sin_day_of_week, cos_day_of_week
+2025-10-05 13:48:50 - INFO - Final column order: lat, lon, date features (10), variables (34)
+2025-10-05 13:48:50 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.1200.021.csv
+2025-10-05 13:48:50 - INFO - Writing CSV to: GLDAS_VIC10_3H.A20170106.1200.021.csv
+2025-10-05 13:48:50 - DEBUG - DataFrame shape: (15159, 46)
+2025-10-05 13:48:50 - DEBUG - Estimated memory usage: 4.7 MB
+2025-10-05 13:48:51 - INFO - CSV file written successfully (6.5 MB)
+2025-10-05 13:48:51 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.1200.021.csv
+2025-10-05 13:48:51 - INFO - 
+[3/4] Processing: GLDAS_VIC10_3H.A20170106.1800.021.nc4
+2025-10-05 13:48:51 - INFO - ----------------------------------------------------------------------
+2025-10-05 13:48:51 - INFO - Processing file: GLDAS_VIC10_3H.A20170106.1800.021.nc4
+2025-10-05 13:48:51 - DEBUG - Opening NC4 file: GLDAS_VIC10_3H.A20170106.1800.021.nc4
+2025-10-05 13:48:51 - DEBUG - Successfully opened file: GLDAS_VIC10_3H.A20170106.1800.021.nc4
+2025-10-05 13:48:51 - DEBUG - NC4 structure validation passed
+2025-10-05 13:48:51 - DEBUG - Found time coordinate: 'time'
+2025-10-05 13:48:51 - DEBUG - Found latitude coordinate: 'lat'
+2025-10-05 13:48:51 - DEBUG - Found longitude coordinate: 'lon'
+2025-10-05 13:48:51 - DEBUG - Extracted coordinates: time(1), lat(150), lon(360)
+2025-10-05 13:48:51 - INFO - Dimensions: 1 time steps × 150 lat × 360 lon
+2025-10-05 13:48:51 - INFO - Total data points to generate: 54,000
+2025-10-05 13:48:51 - DEBUG - Found 35 data variables
+2025-10-05 13:48:51 - DEBUG - First variables: time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg
+2025-10-05 13:48:51 - DEBUG - ... and 30 more
+2025-10-05 13:48:51 - INFO - Found 35 data variables
+2025-10-05 13:48:51 - DEBUG - Variables (first 10): time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg, Qg_tavg, Snowf_tavg, Rainf_tavg, Evap_tavg, Qs_acc...
+2025-10-05 13:48:51 - DEBUG - ... and 25 more
+2025-10-05 13:48:51 - INFO - Starting dataset flattening process...
+2025-10-05 13:48:51 - DEBUG - Creating coordinate mesh...
+2025-10-05 13:48:51 - DEBUG - Generating 54,000 coordinate combinations
+2025-10-05 13:48:51 - DEBUG - Created coordinate mesh with 54,000 rows
+2025-10-05 13:48:51 - INFO - Extracting 35 variables...
+2025-10-05 13:48:51 - WARNING - Variable 'time_bnds' missing required dimensions. Skipping.
+2025-10-05 13:48:51 - INFO - Successfully extracted 34/35 variables
+2025-10-05 13:48:51 - WARNING - Failed to extract 1 variables: time_bnds
+2025-10-05 13:48:51 - INFO - Flattening complete. DataFrame shape: (54000, 37)
+2025-10-05 13:48:51 - INFO - Columns: 37 (3 coordinates + 34 variables)
+2025-10-05 13:48:51 - INFO - Removing rows with any empty variables...
+2025-10-05 13:48:51 - INFO - Removed 38,841 rows with any empty variables (71.9% of data)
+2025-10-05 13:48:51 - INFO - Remaining rows: 15,159
+2025-10-05 13:48:51 - INFO - Processing date features from time column...
+2025-10-05 13:48:51 - INFO - Date features created: 10 new columns added, 'time' column removed
+2025-10-05 13:48:51 - DEBUG - New date columns: date, hour, sin_hour, cos_hour, sin_day_of_year, cos_day_of_year, sin_month, cos_month, sin_day_of_week, cos_day_of_week
+2025-10-05 13:48:51 - INFO - Final column order: lat, lon, date features (10), variables (34)
+2025-10-05 13:48:51 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.1800.021.csv
+2025-10-05 13:48:51 - INFO - Writing CSV to: GLDAS_VIC10_3H.A20170106.1800.021.csv
+2025-10-05 13:48:51 - DEBUG - DataFrame shape: (15159, 46)
+2025-10-05 13:48:51 - DEBUG - Estimated memory usage: 4.7 MB
+2025-10-05 13:48:52 - INFO - CSV file written successfully (6.5 MB)
+2025-10-05 13:48:52 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.1800.021.csv
+2025-10-05 13:48:52 - INFO - 
+[4/4] Processing: GLDAS_VIC10_3H.A20170106.2100.021.nc4
+2025-10-05 13:48:52 - INFO - ----------------------------------------------------------------------
+2025-10-05 13:48:52 - INFO - Processing file: GLDAS_VIC10_3H.A20170106.2100.021.nc4
+2025-10-05 13:48:52 - DEBUG - Opening NC4 file: GLDAS_VIC10_3H.A20170106.2100.021.nc4
+2025-10-05 13:48:52 - DEBUG - Successfully opened file: GLDAS_VIC10_3H.A20170106.2100.021.nc4
+2025-10-05 13:48:52 - DEBUG - NC4 structure validation passed
+2025-10-05 13:48:52 - DEBUG - Found time coordinate: 'time'
+2025-10-05 13:48:52 - DEBUG - Found latitude coordinate: 'lat'
+2025-10-05 13:48:52 - DEBUG - Found longitude coordinate: 'lon'
+2025-10-05 13:48:52 - DEBUG - Extracted coordinates: time(1), lat(150), lon(360)
+2025-10-05 13:48:52 - INFO - Dimensions: 1 time steps × 150 lat × 360 lon
+2025-10-05 13:48:52 - INFO - Total data points to generate: 54,000
+2025-10-05 13:48:52 - DEBUG - Found 35 data variables
+2025-10-05 13:48:52 - DEBUG - First variables: time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg
+2025-10-05 13:48:52 - DEBUG - ... and 30 more
+2025-10-05 13:48:52 - INFO - Found 35 data variables
+2025-10-05 13:48:52 - DEBUG - Variables (first 10): time_bnds, Swnet_tavg, Lwnet_tavg, Qle_tavg, Qh_tavg, Qg_tavg, Snowf_tavg, Rainf_tavg, Evap_tavg, Qs_acc...
+2025-10-05 13:48:52 - DEBUG - ... and 25 more
+2025-10-05 13:48:52 - INFO - Starting dataset flattening process...
+2025-10-05 13:48:52 - DEBUG - Creating coordinate mesh...
+2025-10-05 13:48:52 - DEBUG - Generating 54,000 coordinate combinations
+2025-10-05 13:48:52 - DEBUG - Created coordinate mesh with 54,000 rows
+2025-10-05 13:48:52 - INFO - Extracting 35 variables...
+2025-10-05 13:48:52 - WARNING - Variable 'time_bnds' missing required dimensions. Skipping.
+2025-10-05 13:48:52 - INFO - Successfully extracted 34/35 variables
+2025-10-05 13:48:52 - WARNING - Failed to extract 1 variables: time_bnds
+2025-10-05 13:48:52 - INFO - Flattening complete. DataFrame shape: (54000, 37)
+2025-10-05 13:48:52 - INFO - Columns: 37 (3 coordinates + 34 variables)
+2025-10-05 13:48:52 - INFO - Removing rows with any empty variables...
+2025-10-05 13:48:52 - INFO - Removed 38,841 rows with any empty variables (71.9% of data)
+2025-10-05 13:48:52 - INFO - Remaining rows: 15,159
+2025-10-05 13:48:52 - INFO - Processing date features from time column...
+2025-10-05 13:48:52 - INFO - Date features created: 10 new columns added, 'time' column removed
+2025-10-05 13:48:52 - DEBUG - New date columns: date, hour, sin_hour, cos_hour, sin_day_of_year, cos_day_of_year, sin_month, cos_month, sin_day_of_week, cos_day_of_week
+2025-10-05 13:48:52 - INFO - Final column order: lat, lon, date features (10), variables (34)
+2025-10-05 13:48:52 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.2100.021.csv
+2025-10-05 13:48:52 - INFO - Writing CSV to: GLDAS_VIC10_3H.A20170106.2100.021.csv
+2025-10-05 13:48:52 - DEBUG - DataFrame shape: (15159, 46)
+2025-10-05 13:48:52 - DEBUG - Estimated memory usage: 4.7 MB
+2025-10-05 13:48:53 - INFO - CSV file written successfully (6.5 MB)
+2025-10-05 13:48:53 - DEBUG - Output path: C:\Users\Nizar.DAHRABOU\Desktop\nc4tocsv\output\GLDAS_VIC10_3H.A20170106.2100.021.csv
+2025-10-05 13:48:53 - INFO - 
+======================================================================
+2025-10-05 13:48:53 - INFO - MERGING CSV FILES
+2025-10-05 13:48:53 - INFO - ======================================================================
+2025-10-05 13:48:53 - INFO - Merging 4 CSV files into single output...
+2025-10-05 13:48:53 - DEBUG - Reading file 1/4: GLDAS_VIC10_3H.A20170106.0900.021.csv
+2025-10-05 13:48:53 - DEBUG -   Loaded 15,159 rows
+2025-10-05 13:48:53 - DEBUG - Reading file 2/4: GLDAS_VIC10_3H.A20170106.1200.021.csv
+2025-10-05 13:48:53 - DEBUG -   Loaded 15,159 rows
+2025-10-05 13:48:53 - DEBUG - Reading file 3/4: GLDAS_VIC10_3H.A20170106.1800.021.csv
+2025-10-05 13:48:53 - DEBUG -   Loaded 15,159 rows
+2025-10-05 13:48:53 - DEBUG - Reading file 4/4: GLDAS_VIC10_3H.A20170106.2100.021.csv
+2025-10-05 13:48:53 - DEBUG -   Loaded 15,159 rows
+2025-10-05 13:48:53 - INFO - Combining 4 dataframes (60,636 total rows)...
+2025-10-05 13:48:53 - INFO - Combined DataFrame shape: (60636, 46)
+2025-10-05 13:48:53 - INFO - Writing merged CSV to: merged_output.csv
+2025-10-05 13:48:53 - INFO - Writing CSV to: merged_output.csv
+2025-10-05 13:48:53 - DEBUG - DataFrame shape: (60636, 46)
+2025-10-05 13:48:53 - DEBUG - Estimated memory usage: 24.2 MB
+2025-10-05 13:48:58 - INFO - CSV file written successfully (25.9 MB)
+2025-10-05 13:48:58 - INFO - Removing source CSV files...
+2025-10-05 13:48:58 - DEBUG - Deleted: GLDAS_VIC10_3H.A20170106.0900.021.csv
+2025-10-05 13:48:58 - DEBUG - Deleted: GLDAS_VIC10_3H.A20170106.1200.021.csv
+2025-10-05 13:48:58 - DEBUG - Deleted: GLDAS_VIC10_3H.A20170106.1800.021.csv
+2025-10-05 13:48:58 - DEBUG - Deleted: GLDAS_VIC10_3H.A20170106.2100.021.csv
+2025-10-05 13:48:58 - INFO - Merge complete! Final file contains 60,636 rows
+2025-10-05 13:48:58 - INFO - ======================================================================
+2025-10-05 13:48:58 - INFO - BATCH PROCESSING SUMMARY
+2025-10-05 13:48:58 - INFO - ======================================================================
+2025-10-05 13:48:58 - INFO - Total files found:       4
+2025-10-05 13:48:58 - INFO - Successfully converted:  4
+2025-10-05 13:48:58 - INFO - Failed conversions:      0
+2025-10-05 13:48:58 - INFO - Skipped files:           0
+2025-10-05 13:48:58 - INFO - Success rate:            100.0%
+2025-10-05 13:48:58 - INFO - ======================================================================
+2025-10-05 13:48:58 - INFO - All files processed successfully!
